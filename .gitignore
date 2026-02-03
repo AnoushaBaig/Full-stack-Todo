@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Virtual envs
+.venv/
+venv/
+
+# Env files / secrets
+.env
+.env.*
+
+# Local databases
+*.db
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+
+nul
+
