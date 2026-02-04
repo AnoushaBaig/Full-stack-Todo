@@ -26,10 +26,15 @@ export default function SigninPage() {
     setLoading(true);
 
     try {
-      // For now, simulate Better Auth signin
-      // In a real implementation, we would use Better Auth client
-      // For demo purposes, let's call the backend signin endpoint directly
-      const response = await fetch('http://localhost:8000/auth/signin', {
+      // Get API URL from environment variable
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+
+      if (!API_URL) {
+        throw new Error('API URL is not configured');
+      }
+
+      // Call the backend signin endpoint
+      const response = await fetch(`${API_URL}/auth/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

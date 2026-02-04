@@ -38,10 +38,15 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      // For now, simulate Better Auth signup
-      // In a real implementation, we would use Better Auth client
-      // For demo purposes, let's call the backend signup endpoint directly
-      const response = await fetch('http://localhost:8000/auth/signup', {
+      // Get API URL from environment variable
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+
+      if (!API_URL) {
+        throw new Error('API URL is not configured');
+      }
+
+      // Call the backend signup endpoint
+      const response = await fetch(`${API_URL}/auth/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
