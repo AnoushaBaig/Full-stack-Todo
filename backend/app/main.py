@@ -12,8 +12,7 @@ from .core.errors import (
     unhandled_exception_handler,
     validation_exception_handler,
 )
-# ❌ TEMPORARILY disable DB init (HF pe hang ho raha tha)
-# from .db.session import init_db
+from .db.session import init_db
 
 
 def create_app() -> FastAPI:
@@ -46,10 +45,9 @@ def create_app() -> FastAPI:
     app.include_router(tasks_router)
     app.include_router(auth_router)
 
-    # ❌ Disable startup DB init for now
-    # @app.on_event("startup")
-    # def _startup() -> None:
-    #     init_db()
+    @app.on_event("startup")
+    def _startup() -> None:
+        init_db()
 
     return app
 
