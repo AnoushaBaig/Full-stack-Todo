@@ -6,11 +6,13 @@ from app.main import app
 import uvicorn
 
 if __name__ == "__main__":
-    print("Starting backend server on http://127.0.0.1:8000")
+    # HF Space automatically sets PORT environment variable
+    port = int(os.environ.get("PORT", 7860))
+    print(f"Starting backend server on 0.0.0.0:{port}")
     uvicorn.run(
         "app.main:app",
-        host="127.0.0.1",
-        port=8000,
-        reload=False,  # Disable reload to avoid import string issues
+        host="0.0.0.0",  # HF requires 0.0.0.0
+        port=port,
+        reload=False,
         log_level="info"
     )

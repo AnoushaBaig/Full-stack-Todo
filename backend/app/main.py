@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import HTTPException
 
 from .api.routes.tasks import router as tasks_router
 from .api.routes.auth import router as auth_router
@@ -13,7 +12,8 @@ from .core.errors import (
     unhandled_exception_handler,
     validation_exception_handler,
 )
-from .db.session import init_db
+# ❌ TEMPORARILY disable DB init (HF pe hang ho raha tha)
+# from .db.session import init_db
 
 
 def create_app() -> FastAPI:
@@ -21,24 +21,35 @@ def create_app() -> FastAPI:
 
     app = FastAPI(title=settings.app_name)
 
+    # ✅ FIXED CORS (Vercel + browser compatible)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"],
-        allow_credentials=False,
+        allow_origins=[
+        "https://full-stack-todo-ecy4.vercel.app",   # apna exact vercel domain
+        "https://*.vercel.app",  # Allow any Vercel subdomain
+        "http://localhost:3000",  # Allow local development
+        "http://localhost:3001",  # Allow alternative local port
+        "http://127.0.0.1:3000",  # Allow local IPv4
+        "http://127.0.0.1:3001",  # Allow alternative local port
+        ],
+        allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
+    # Exception handlers
     app.add_exception_handler(HTTPException, http_exception_handler)
     app.add_exception_handler(RequestValidationError, validation_exception_handler)
     app.add_exception_handler(Exception, unhandled_exception_handler)
 
+    # Routers
     app.include_router(tasks_router)
     app.include_router(auth_router)
 
-    @app.on_event("startup")
-    def _startup() -> None:
-        init_db()
+    # ❌ Disable startup DB init for now
+    # @app.on_event("startup")
+    # def _startup() -> None:
+    #     init_db()
 
     return app
 

@@ -21,7 +21,10 @@ class ApiClient {
    * Generic request method that adds JWT token to headers
    */
   async request<T>(endpoint: string, options: RequestInit = {}): Promise<ApiResponse<T>> {
-    const url = `${this.baseUrl}${endpoint}`;
+    // Ensure proper URL construction with or without trailing slash
+    const normalizedBaseUrl = this.baseUrl.endsWith('/') ? this.baseUrl.slice(0, -1) : this.baseUrl;
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    const url = `${normalizedBaseUrl}${normalizedEndpoint}`;
 
     // Get the token from storage
     const token = jwtStorage.getToken();
